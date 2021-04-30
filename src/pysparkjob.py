@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 
 #get data source from bash
 data_source = sys.argv[1]
+print(data_source)
 # data_source = '../Data/' 
 
 # spark = SparkSession \
@@ -16,14 +17,17 @@ data_source = sys.argv[1]
 #   .appName('spark-bigquery-demo') \
 #   .getOrCreate()
 
-spark = SparkSession.builder.getOrCreate()
+# spark = SparkSession.builder.getOrCreate()
 
-# Use the Cloud Storage bucket for temporary BigQuery export data used
-# by the connector. 
-spark.conf.set('temporaryGcsBucket', 'gs://${PROJECT_ID}/temporary_file/')
+spark = SparkSession.builder \
+  .appName('Local file migration')\
+  .config('spark.jars', 'gs://spark-lib/bigquery/spark-bigquery-latest.jar') \
+  .getOrCreate()
+
 
 #extract data from data input (data_source on gcs)
-data = spark.read.json(data_source)
+# data = spark.read.json(data_source)
+data = spark.read.load(data_source, format='json')
 
 #transform data
 #in json file, "airline_code" field is string type so we need to change it into integer
@@ -56,8 +60,9 @@ data = data.select(col("id"), col("airline_code"), col("flight_num"),
                    col("source_airport"), col("destination_airport"),
                    col("actual_depart_datetime"), col("actual_arrive_datetime"))
 
-#load data into BigQuery
-data.write.format('bigquery') \
-  .option('table', 'week3.flight-actual-date') \
-  .mode('append') \
+data.write \
+  .format("bigquery") \
+  .option("table","week3.actual-flight-date") \
+  .option("temporaryGcsBucket","gs://blank-space-312006/temp") \
+  .mode("append") \
   .save()
