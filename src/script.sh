@@ -12,7 +12,8 @@ gcloud beta dataproc clusters create ${PROJECT_ID} \
 --num-workers 2 \
 --worker-machine-type n1-standard-2 \
 --worker-boot-disk-size 20 \
---image-version 1.3
+--image-version 1.3 \
+--max-idle=t10m
 
 #submit jobs
 gcloud dataproc jobs submit pyspark src/pysparkjob.py \
@@ -22,4 +23,4 @@ gcloud dataproc jobs submit pyspark src/pysparkjob.py \
 -- gs://${PROJECT_ID}/$date.json
 
 #delete dataproc cluster
-gcloud dataproc clusters delete ${PROJECT_ID} --region=asia-southeast1
+# gcloud dataproc clusters delete ${PROJECT_ID} --region=asia-southeast1
