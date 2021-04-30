@@ -9,9 +9,9 @@ Use git to clone this repository<br>
 Make sure you have python 3.6 installed on your machine <br>
 `python --version`
 
-To run the script in this repository, you need to install the prerequisite library from requirements.txt
+To run the script in this repository, you need to install the prerequisite library from requirements.txt <br>
 `pip install -r requirements.txt`
 
 # Usage
-Before running the main program, run the command below
+Before running the main program, run the command below <br>
 `export PROJECT_ID='your-project-id'`
